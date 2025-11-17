@@ -1,13 +1,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Bot, User } from "lucide-react";
 
-interface ChatMessageProps {
-  role: "ai" | "user";
-  content: string;
-  timestamp?: string;
-}
-
-export default function ChatMessage({ role, content, timestamp }: ChatMessageProps) {
+export default function ChatMessage({ role, content, timestamp }) {
   const isAI = role === "ai";
 
   return (

@@ -1,12 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 
-interface FeatureCardProps {
-  icon: string;
-  title: string;
-  description: string;
-}
-
-export default function FeatureCard({ icon, title, description }: FeatureCardProps) {
+export default function FeatureCard({ icon, title, description }) {
   return (
     <Card className="hover-elevate" data-testid={`card-feature-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       <CardContent className="p-6 space-y-4">

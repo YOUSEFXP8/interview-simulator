@@ -3,21 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Eye } from "lucide-react";
 
-interface InterviewHistoryCardProps {
-  date: string;
-  position: string;
-  duration: string;
-  status: "completed" | "in-progress" | "paused";
-  score?: number;
-}
-
-export default function InterviewHistoryCard({
-  date,
-  position,
-  duration,
-  status,
-  score,
-}: InterviewHistoryCardProps) {
+export default function InterviewHistoryCard({ date, position, duration, status, score }) {
   const statusColors = {
     completed: "bg-green-500/10 text-green-700 dark:text-green-400",
     "in-progress": "bg-blue-500/10 text-blue-700 dark:text-blue-400",

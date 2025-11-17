@@ -7,16 +7,9 @@ import { Send, Pause, Play, Square } from "lucide-react";
 import ChatMessage from "./ChatMessage";
 import TypingIndicator from "./TypingIndicator";
 
-interface Message {
-  id: string;
-  role: "ai" | "user";
-  content: string;
-  timestamp: string;
-}
-
 export default function InterviewChat() {
   //todo: remove mock functionality
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState([
     {
       id: "1",
       role: "ai",
@@ -28,7 +21,7 @@ export default function InterviewChat() {
   const [isTyping, setIsTyping] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [timer, setTimer] = useState(0);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -43,7 +36,7 @@ export default function InterviewChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  const formatTime = (seconds: number) => {
+  const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
@@ -52,7 +45,7 @@ export default function InterviewChat() {
   const handleSend = () => {
     if (!input.trim()) return;
 
-    const userMessage: Message = {
+    const userMessage = {
       id: Date.now().toString(),
       role: "user",
       content: input,
@@ -72,7 +65,7 @@ export default function InterviewChat() {
         "What are your greatest strengths and how do they apply to this position?",
       ];
 
-      const aiMessage: Message = {
+      const aiMessage = {
         id: (Date.now() + 1).toString(),
         role: "ai",
         content: mockResponses[Math.floor(Math.random() * mockResponses.length)],
@@ -84,7 +77,7 @@ export default function InterviewChat() {
     }, 2000);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();

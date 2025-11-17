@@ -5,18 +5,18 @@ import { Badge } from "@/components/ui/badge";
 import { Upload, FileText, X } from "lucide-react";
 
 export default function ResumeUpload() {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef(null);
 
-  const handleFileChange = (selectedFile: File | null) => {
+  const handleFileChange = (selectedFile) => {
     if (selectedFile) {
       console.log("File uploaded:", selectedFile.name);
       setFile(selectedFile);
     }
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
   };
@@ -25,7 +25,7 @@ export default function ResumeUpload() {
     setIsDragging(false);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
     const droppedFile = e.dataTransfer.files[0];

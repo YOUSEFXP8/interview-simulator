@@ -18,28 +18,28 @@ export default function History() {
       date: "Nov 15, 2025",
       position: "Senior Frontend Developer",
       duration: "32 min",
-      status: "completed" as const,
+      status: "completed",
       score: 85,
     },
     {
       date: "Nov 16, 2025",
       position: "Product Manager",
       duration: "45 min",
-      status: "completed" as const,
+      status: "completed",
       score: 92,
     },
     {
       date: "Nov 16, 2025",
       position: "Full Stack Engineer",
       duration: "28 min",
-      status: "completed" as const,
+      status: "completed",
       score: 78,
     },
     {
       date: "Nov 17, 2025",
       position: "Data Scientist",
       duration: "15 min",
-      status: "in-progress" as const,
+      status: "in-progress",
     },
   ];
 

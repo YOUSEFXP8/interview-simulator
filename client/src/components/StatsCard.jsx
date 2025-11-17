@@ -1,14 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { LucideIcon } from "lucide-react";
 
-interface StatsCardProps {
-  icon: LucideIcon;
-  label: string;
-  value: string | number;
-  iconColor?: string;
-}
-
-export default function StatsCard({ icon: Icon, label, value, iconColor = "text-primary" }: StatsCardProps) {
+export default function StatsCard({ icon: Icon, label, value, iconColor = "text-primary" }) {
   return (
     <Card data-testid={`card-stat-${label.toLowerCase().replace(/\s+/g, '-')}`}>
       <CardContent className="p-6">
