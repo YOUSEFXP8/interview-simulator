@@ -1,47 +1,47 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Bot, User } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
-export default function ChatMessage({ role, content, timestamp }) {
-  const isAI = role === "ai";
+const roleCopy = {
+  ai: {
+    name: "AI Interviewer",
+    fallback: "AI",
+  },
+  user: {
+    name: "You",
+    fallback: "U",
+  },
+};
+
+export default function ChatMessage({ role = "ai", content, timestamp }) {
+  const meta = roleCopy[role] ?? roleCopy.ai;
+  const isUser = role === "user";
 
   return (
     <div
-      className={`flex gap-4 ${isAI ? "justify-start" : "justify-end"}`}
-      data-testid={`message-${role}`}
+      className={cn(
+        "flex items-start gap-3",
+        isUser ? "flex-row-reverse text-right" : "text-left"
+      )}
     >
-      {isAI && (
-        <Avatar className="w-8 h-8 flex-shrink-0" data-testid="avatar-ai">
-          <AvatarFallback className="bg-primary text-primary-foreground">
-            <Bot className="h-4 w-4" />
-          </AvatarFallback>
-        </Avatar>
-      )}
-
-      <div className={`flex flex-col gap-1 max-w-[70%] ${isAI ? "items-start" : "items-end"}`}>
-        <div
-          className={`px-4 py-3 rounded-2xl ${
-            isAI
-              ? "bg-card border border-card-border"
-              : "bg-primary text-primary-foreground"
-          }`}
-          data-testid={`text-message-content-${role}`}
-        >
-          <p className="text-sm leading-relaxed">{content}</p>
+      <Avatar className="h-9 w-9 border">
+        <AvatarFallback>{meta.fallback}</AvatarFallback>
+      </Avatar>
+      <div className={cn("space-y-1", isUser && "items-end flex flex-col")}>
+        <div className="text-xs uppercase tracking-wide text-muted-foreground">
+          {meta.name} • {timestamp}
         </div>
-        {timestamp && (
-          <span className="text-xs text-muted-foreground px-2" data-testid={`text-timestamp-${role}`}>
-            {timestamp}
-          </span>
-        )}
+        <Card
+          className={cn(
+            "p-3 text-sm leading-relaxed shadow-sm",
+            isUser
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted/70 text-muted-foreground"
+          )}
+        >
+          {content}
+        </Card>
       </div>
-
-      {!isAI && (
-        <Avatar className="w-8 h-8 flex-shrink-0" data-testid="avatar-user">
-          <AvatarFallback className="bg-secondary">
-            <User className="h-4 w-4" />
-          </AvatarFallback>
-        </Avatar>
-      )}
     </div>
   );
 }

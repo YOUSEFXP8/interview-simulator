@@ -1,0 +1,9 @@
+{
+  "typescript.tsdk": null,
+  "typescript.enable": false,
+  "javascript.preferences.useAliasesForRenames": true,
+  "files.exclude": {
+    "**/tsconfig.json": true
+  }
+}
+
