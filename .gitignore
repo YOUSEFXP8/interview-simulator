@@ -1,0 +1,63 @@
+# ==========================================
+# Root .gitignore for Interview Simulator
+# Cohesively covers client (React/Vite) & server (.NET/C#)
+# ==========================================
+
+# ------------------------------------------
+# Client Side (Node.js / React / Vite)
+# ------------------------------------------
+client/node_modules/
+client/dist/
+client/dist-ssr/
+client/*.local
+client/.env.local
+client/.env.*.local
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+client/pnpm-debug.log*
+
+# ------------------------------------------
+# Server Side (C# / .NET / Visual Studio)
+# ------------------------------------------
+# Build folders
+**/bin/
+**/obj/
+
+# Visual Studio / Rider / VS Code cache & metadata
+.vs/
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# User-secrets and personal settings
+**/appsettings.local.json
+**/UserSecrets/
+**/secrets.json
+
+# Local databases and backups
+*.db
+*.sqlite
+*.sqlite3
+*.ldf
+*.mdf
+
+# Rider / Resharper
+*.DotSettings.user
+_ReSharper*/
+
+# ------------------------------------------
+# Global / IDE
+# ------------------------------------------
+.lock-wscript
+.eslintcache
+.stylelintcache
