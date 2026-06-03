@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Interview;
+using Application.DTOs.Interview;
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Persistence;
@@ -38,7 +38,8 @@ public class InterviewService : IInterviewService
             Role = session.Role,
             Difficulty = session.Difficulty,
             StartedAt = session.StartedAt,
-            CompletedAt = session.CompletedAt
+            CompletedAt = session.CompletedAt,
+            AverageScore = 0
         };
     }
 
@@ -51,13 +52,19 @@ public class InterviewService : IInterviewService
         if (session == null)
             return null;
 
+        var averageScore = (int)(await _context.Evaluations
+            .Where(e => e.Answer.InterviewSessionId == sessionId)
+            .Select(e => (double?)e.Score)
+            .AverageAsync() ?? 0);
+
         return new InterviewSessionDto
         {
             Id = session.Id,
             Role = session.Role,
             Difficulty = session.Difficulty,
             StartedAt = session.StartedAt,
-            CompletedAt = session.CompletedAt
+            CompletedAt = session.CompletedAt,
+            AverageScore = averageScore
         };
     }
 
@@ -72,7 +79,11 @@ public class InterviewService : IInterviewService
                 Role = x.Role,
                 Difficulty = x.Difficulty,
                 StartedAt = x.StartedAt,
-                CompletedAt = x.CompletedAt
+                CompletedAt = x.CompletedAt,
+                AverageScore = (int)(_context.Evaluations
+                    .Where(e => e.Answer.InterviewSessionId == x.Id)
+                    .Select(e => (double?)e.Score)
+                    .Average() ?? 0)
             })
             .ToListAsync();
     }

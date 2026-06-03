@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { apiFetch } from "@/utils/api";
 
 const AuthContext = createContext(null);
 
@@ -21,28 +22,24 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     setLoading(true);
-    // Simulate minor network delay for premium feel
-    await new Promise((resolve) => setTimeout(resolve, 600));
 
     try {
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
-      const foundUser = users.find(
-        (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-      );
-
-      if (!foundUser) {
-        throw new Error("Invalid email or password.");
-      }
+      const response = await apiFetch("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
 
       const userSession = {
-        id: foundUser.id,
-        name: foundUser.name,
-        email: foundUser.email,
+        name: response.username,
+        email: response.email,
       };
 
+      localStorage.setItem("token", response.token);
       localStorage.setItem("currentUser", JSON.stringify(userSession));
       setUser(userSession);
       return userSession;
+    } catch (e) {
+      throw e;
     } finally {
       setLoading(false);
     }
@@ -50,39 +47,24 @@ export function AuthProvider({ children }) {
 
   const register = async (name, email, password) => {
     setLoading(true);
-    // Simulate minor network delay for premium feel
-    await new Promise((resolve) => setTimeout(resolve, 800));
 
     try {
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
-      const emailExists = users.some(
-        (u) => u.email.toLowerCase() === email.toLowerCase()
-      );
+      const response = await apiFetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify({ name, email, password }),
+      });
 
-      if (emailExists) {
-        throw new Error("An account with this email already exists.");
-      }
-
-      const newUser = {
-        id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 9),
-        name,
-        email,
-        password, // In a real backend, this would be hashed
-      };
-
-      // Save to list of users
-      users.push(newUser);
-      localStorage.setItem("users", JSON.stringify(users));
-
-      // Auto login user
       const userSession = {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
+        name: response.username,
+        email: response.email,
       };
+
+      localStorage.setItem("token", response.token);
       localStorage.setItem("currentUser", JSON.stringify(userSession));
       setUser(userSession);
       return userSession;
+    } catch (e) {
+      throw e;
     } finally {
       setLoading(false);
     }
@@ -90,6 +72,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem("currentUser");
+    localStorage.removeItem("token");
     setUser(null);
   };
 

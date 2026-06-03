@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-Workers-d70b613b-94ec-4e7c-8d66-63b356d73cdb</UserSecretsId>
+    <UserSecretsId>1f222406-c688-40d7-8112-b8dc56549439</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

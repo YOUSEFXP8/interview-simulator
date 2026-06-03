@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Evaluation;
+using Application.DTOs.Evaluation;
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Persistence;
@@ -23,6 +23,22 @@ public class EvaluationService : IEvaluationService
     public async Task<EvaluationDto> EvaluateAnswerAsync(
         Guid answerId)
     {
+        var existingEvaluation = await _context.Evaluations
+            .FirstOrDefaultAsync(e => e.AnswerId == answerId);
+
+        if (existingEvaluation != null)
+        {
+            return new EvaluationDto
+            {
+                Id = existingEvaluation.Id,
+                AnswerId = existingEvaluation.AnswerId,
+                Score = existingEvaluation.Score,
+                Strengths = existingEvaluation.Strengths,
+                Weaknesses = existingEvaluation.Weaknesses,
+                Feedback = existingEvaluation.Feedback
+            };
+        }
+
         var answer = await _context.Answers
             .Include(a => a.Question)
             .FirstOrDefaultAsync(a => a.Id == answerId);

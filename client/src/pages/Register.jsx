@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,24 @@ export default function Register() {
   const [, navigate] = useLocation();
 
   // Show loading spinner while loading session
-  if (loading) {
+  
+
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  
+  useEffect(() => {
+    if (user) {
+      navigate("/", { replace: true });
+    }
+  }, [user, navigate]);
+if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
         <div className="text-center space-y-4">
@@ -20,20 +37,6 @@ export default function Register() {
       </div>
     );
   }
-
-  // Redirect if already logged in
-  if (user) {
-    navigate("/practice");
-  }
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -64,7 +67,7 @@ export default function Register() {
     try {
       await register(name, email, password);
       // wouter will navigate via redirect above or explicitly:
-      navigate("/practice");
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err.message || "Failed to create account.");
     } finally {

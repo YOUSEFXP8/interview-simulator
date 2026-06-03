@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.Interview;
+namespace Application.DTOs.Interview;
 
 public class InterviewSessionDto
 {
@@ -11,4 +11,6 @@ public class InterviewSessionDto
     public DateTime StartedAt { get; set; }
 
     public DateTime? CompletedAt { get; set; }
+
+    public int AverageScore { get; set; }
 }

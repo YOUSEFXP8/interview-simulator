@@ -19,17 +19,33 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<AuthResponseDto>> Register(
         RegisterRequestDto request)
     {
-        var result = await _authService.RegisterAsync(request);
-
-        return Ok(result);
+        try
+        {
+            var result = await _authService.RegisterAsync(request);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponseDto>> Login(
         LoginRequestDto request)
     {
-        var result = await _authService.LoginAsync(request);
-
-        return Ok(result);
+        try
+        {
+            var result = await _authService.LoginAsync(request);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message == "Invalid credentials.")
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }

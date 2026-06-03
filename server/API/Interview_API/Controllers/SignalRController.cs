@@ -1,9 +1,10 @@
-﻿using Interview_API.Hubs;
+using Interview_API.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 [ApiController]
 [Route("api/signalr")]
+[Route("api/notifications")]
 public class SignalRController : ControllerBase
 {
     private readonly IHubContext<EvaluationHub> _hubContext;

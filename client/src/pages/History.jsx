@@ -1,10 +1,30 @@
+import { useEffect, useState } from "react";
 import Navigation from "@/components/Navigation";
 import InterviewHistoryCard from "@/components/InterviewHistoryCard";
 import StatsCard from "@/components/StatsCard";
+import { apiFetch } from "@/utils/api";
 
 export default function History() {
-  const interviews = JSON.parse(localStorage.getItem("interviewHistory") || "[]");
-  const scores = interviews.map((interview) => interview.score).filter(Number.isFinite);
+  const [interviews, setInterviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadInterviews() {
+      try {
+        const data = await apiFetch("/api/interview/user");
+        setInterviews(data);
+      } catch (err) {
+        console.error("Failed to load interviews", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadInterviews();
+  }, []);
+
+  const scores = interviews
+    .map((interview) => interview.averageScore)
+    .filter((s) => s > 0);
   const averageScore = scores.length
     ? `${Math.round(scores.reduce((total, score) => total + score, 0) / scores.length)}%`
     : "0%";
@@ -12,8 +32,14 @@ export default function History() {
   const stats = [
     { label: "Total Interviews", value: interviews.length },
     { label: "Average Score", value: averageScore },
-    { label: "Completed", value: interviews.filter((interview) => interview.status === "completed").length },
-    { label: "Best Score", value: scores.length ? `${Math.max(...scores)}%` : "0%" },
+    {
+      label: "Completed",
+      value: interviews.filter((interview) => interview.completedAt).length,
+    },
+    {
+      label: "Best Score",
+      value: scores.length ? `${Math.round(Math.max(...scores))}%` : "0%",
+    },
   ];
 
   return (
@@ -21,8 +47,12 @@ export default function History() {
       <Navigation />
       <main className="mx-auto max-w-7xl space-y-8 px-4 pt-28 pb-12 sm:px-6">
         <div>
-          <h1 className="font-heading text-3xl font-bold text-foreground">Interview History</h1>
-          <p className="mt-2 text-muted-foreground">Track your progress and review past practice sessions.</p>
+          <h1 className="font-heading text-3xl font-bold text-foreground">
+            Interview History
+          </h1>
+          <p className="mt-2 text-muted-foreground">
+            Track your progress and review past practice sessions.
+          </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-4">
@@ -32,9 +62,28 @@ export default function History() {
         </div>
 
         <div className="space-y-4">
-          <h2 className="font-heading text-xl font-semibold text-foreground">Recent Interviews</h2>
-          {interviews.length ? (
-            interviews.map((interview) => <InterviewHistoryCard key={interview.id} {...interview} />)
+          <h2 className="font-heading text-xl font-semibold text-foreground">
+            Recent Interviews
+          </h2>
+          {loading ? (
+            <div className="rounded-lg border border-dashed border-border bg-card/70 p-8 text-center text-muted-foreground">
+              Loading...
+            </div>
+          ) : interviews.length ? (
+            interviews.map((interview) => (
+              <InterviewHistoryCard
+                key={interview.id}
+                date={new Date(interview.startedAt).toLocaleDateString()}
+                position={interview.role || "General Interview"}
+                duration={`Difficulty: ${interview.difficulty || "N/A"}`}
+                status={interview.completedAt ? "completed" : "in-progress"}
+                score={
+                  interview.completedAt
+                    ? Math.round(interview.averageScore)
+                    : undefined
+                }
+              />
+            ))
           ) : (
             <div className="rounded-lg border border-dashed border-border bg-card/70 p-8 text-center text-muted-foreground">
               Complete an interview to see it here.
