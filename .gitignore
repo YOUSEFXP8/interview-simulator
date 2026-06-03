@@ -44,6 +44,9 @@ ehthumbs.db
 **/UserSecrets/
 **/secrets.json
 
+# Uploads and attachments
+**/Uploads/
+
 # Local databases and backups
 *.db
 *.sqlite
