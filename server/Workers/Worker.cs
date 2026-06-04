@@ -16,17 +16,20 @@ public class Worker : BackgroundService
     private readonly RabbitMQSettings _settings;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly HttpClient _httpClient;
+    private readonly IConfiguration _configuration;
 
     public Worker(
      ILogger<Worker> logger,
      IOptions<RabbitMQSettings> options,
      IServiceScopeFactory scopeFactory,
-     HttpClient httpClient)
+     HttpClient httpClient,
+     IConfiguration configuration)
     {
         _logger = logger;
         _settings = options.Value;
         _scopeFactory = scopeFactory;
         _httpClient = httpClient;
+        _configuration = configuration;
     }
 
     protected override async Task ExecuteAsync(
@@ -71,8 +74,9 @@ public class Worker : BackgroundService
                     var result = await evaluationService
                         .EvaluateAnswerAsync(message!.AnswerId);
 
+                    var baseUrl = _configuration["ApiBaseUrl"] ?? "https://localhost:7265";
                     await _httpClient.PostAsJsonAsync(
-    "https://localhost:7265/api/notifications/evaluation-completed",
+    $"{baseUrl}/api/notifications/evaluation-completed",
     new
     {
         result.AnswerId,

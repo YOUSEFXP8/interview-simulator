@@ -24,7 +24,8 @@ const queryClient = new QueryClient();
 
 function useEvaluationHub() {
   useEffect(() => {
-    const hubUrl = "https://localhost:7265/hubs/evaluation";
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+    const hubUrl = `${baseUrl}/hubs/evaluation`;
     if (!hubUrl) return undefined;
 
     const connection = new signalR.HubConnectionBuilder()

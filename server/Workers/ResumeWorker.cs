@@ -1,4 +1,4 @@
-﻿using Application.Interfaces;
+using Application.Interfaces;
 using Application.Messaging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -16,22 +16,32 @@ public class ResumeWorker : BackgroundService
     private readonly RabbitMQSettings _settings;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly HttpClient _httpClient;
+    private readonly IConfiguration _configuration;
 
     public ResumeWorker(
         ILogger<ResumeWorker> logger,
         IOptions<RabbitMQSettings> options,
         IServiceScopeFactory scopeFactory,
-        HttpClient httpClient)
+        HttpClient httpClient,
+        IConfiguration configuration)
     {
         _logger = logger;
         _settings = options.Value;
         _scopeFactory = scopeFactory;
         _httpClient = httpClient;
+        _configuration = configuration;
     }
 
     protected override async Task ExecuteAsync(
         CancellationToken stoppingToken)
     {
+
+        _logger.LogInformation(
+    "RabbitMQ Config -> Host={Host}, User={User}, Queue={Queue}",
+    _settings.HostName,
+    _settings.UserName,
+    _settings.ResumeQueueName);
+
         var factory = new ConnectionFactory
         {
             HostName = _settings.HostName,
@@ -79,8 +89,9 @@ public class ResumeWorker : BackgroundService
                     await processor.ProcessResumeAsync(
                         message.ResumeId);
 
+                    var baseUrl = _configuration["ApiBaseUrl"] ?? "https://localhost:7265";
                     await _httpClient.PostAsJsonAsync(
-    "https://localhost:7265/api/notifications/resume-processed",
+    $"{baseUrl}/api/notifications/resume-processed",
     new ResumeProcessedNotification
     {
         ResumeId = message.ResumeId

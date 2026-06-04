@@ -64,3 +64,6 @@ _ReSharper*/
 .lock-wscript
 .eslintcache
 .stylelintcache
+
+# Secrets
+.env

@@ -116,21 +116,26 @@ namespace Interview_API
     ResumeService>();
 
 
+            var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("ReactPolicy", policy =>
-                {
-                    policy
-                        .WithOrigins(
-    "http://localhost:5173",
-    "http://localhost:5174"
-)
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
-                });
+                options.AddPolicy("AllowFrontend",
+                    policy =>
+                    {
+                        policy.WithOrigins(allowedOrigins)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    });
             });
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                dbContext.Database.Migrate();
+            }
 
 
             // Configure the HTTP request pipeline.
@@ -141,7 +146,7 @@ namespace Interview_API
             }
 
             app.UseHttpsRedirection();
-            app.UseCors("ReactPolicy");
+            app.UseCors("AllowFrontend");
             app.UseAuthentication();
             app.UseAuthorization();
 
